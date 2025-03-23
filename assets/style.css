@@ -1,0 +1,313 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    transition: background 0.5s;
+    background: #f0f2f5;
+}
+#nameError {
+    font-size: 14px;
+    margin-top: 5px;
+    animation: fadeOut 2s ease-in-out; /* Optional: Add fade-out animation */
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+.game-container h2{
+    color: #D97706;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 40px;
+    font-weight: bold;
+}
+.game-container, .game-screen, .game-over {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    animation: fadeIn 1s;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.game-screen, .game-over {
+    display: none;
+}
+
+.score-timer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #a80068;
+    border-bottom: 1px solid rgba(0, 211, 11, 0.1);
+    position: relative;
+}
+
+.question {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.alert-box {
+    margin-top: 10px;
+    display: none;
+}
+
+.game-over {
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s;
+    position: relative;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.game-over h2 {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-size: 30px;
+    animation: slideIn 0.5s ease-out;
+}
+
+.game-over-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    animation: slideIn 0.5s ease-out;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    color: #555;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+    font-size: 24px;
+    width: 30px;
+    text-align: center;
+}
+
+.game-over p {
+    margin: 0;
+    font-weight: 500;
+}
+
+.game-over p strong {
+    color: #2c3e50;
+}
+
+.progress-container {
+    width: 100%;
+    height: 12px;
+    background-color: #e0e0e0; /* Light gray background */
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Inner shadow for depth */
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%; /* Initial width */
+    background: linear-gradient(90deg, #6EE7B7, #3B82F6); /* Gradient color */
+    border-radius: 10px;
+    position: relative;
+    transition: width 0.5s ease-in-out; /* Smooth transition */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Outer shadow for depth */
+}
+
+/* Optional: Add a glowing effect */
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    animation: glow 1.5s infinite alternate; /* Glow animation */
+}
+
+@keyframes glow {
+    from {
+        opacity: 0.5;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.power-ups {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.power-up {
+    padding: 10px 15px;
+    background: #007bff;
+    color: white;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.power-up:hover {
+    background: #0056b3;
+    transform: scale(1.1);
+}
+
+.power-up:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+.theme-selector {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.theme-selector button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.theme-selector button:hover {
+    transform: scale(1.05);
+}
+
+.theme-selector button.ocean-theme {
+    background: linear-gradient(135deg, #1D4ED8, #1E90FF);
+}
+
+.theme-selector button.sunset-theme {
+    background: linear-gradient(135deg, #D97706, #FF4500);
+}
+
+.theme-selector button.forest-theme {
+    background: linear-gradient(135deg, #047857, #228B22);
+}
+
+.theme-selector button.midnight-theme {
+    background: linear-gradient(135deg, #1E1E2F, #2C3E50);
+}
+
+.theme-selector button.candy-theme {
+    background: linear-gradient(135deg, #FF6F61, #FF1493);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes confetti {
+    0% { transform: translateY(0) rotate(0); }
+    100% { transform: translateY(-100px) rotate(360deg); }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.confetti {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    animation: confetti 1s ease-out;
+}
+
+#restartGame {
+    margin-top: 30px;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #057eff, #056ad6);
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#restartGame:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(5, 122, 255, 0.3);
+}
+
+.trophy {
+    font-size: 60px;
+    animation: float 3s infinite ease-in-out;
+}
+
+.celebrate-message {
+    font-size: 20px;
+    font-weight: 700;
+    color: #28a745;
+    animation: slideIn 0.5s ease-out;
+    margin-bottom: 10px;
+}
+
+/* Score Animation */
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-20px); opacity: 0; }
+}
+
+.score-animation {
+    position: absolute;
+    font-size: 20px;
+    font-weight: bold;
+    animation: floatUp 1s ease-out;
+    display: none;
+    z-index: 1000;
+    top: -20px;
+    right: -7px;
+}
