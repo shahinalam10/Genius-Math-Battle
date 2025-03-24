@@ -3,18 +3,22 @@ body {
     transition: background 0.5s;
     background: #f0f2f5;
 }
-#nameError {
-    font-size: 14px;
-    margin-top: 5px;
-    animation: fadeOut 2s ease-in-out; /* Optional: Add fade-out animation */
+#errorButton {
+    display: none; /* Initially hidden */
+    margin-bottom: 10px; /* Space below the button */
+    text-align: center !important; /* Center the button */
+    padding: 10px 20px; /* Padding for better appearance */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px; /* Font size */
+    animation: fadeIn 0.5s ease-in-out; /* Fade-in animation */
 }
 
-@keyframes fadeOut {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 .game-container h2{
-    color: #D97706;
+    color: #e04000;
     font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-size: 40px;
     font-weight: bold;
@@ -310,4 +314,110 @@ body {
     z-index: 1000;
     top: -20px;
     right: -7px;
+}
+
+/* Developer Profile Section */
+.developer-profile {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.developer-name {
+    margin: 0;
+    font-size: 14px;
+    color: #850068;
+}
+
+.profile-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile-link {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.profile-link:hover {
+    transform: scale(1.1);
+}
+
+.profile-pic {
+    width: 40px; /* Smaller size */
+    height: 40px; /* Smaller size */
+    border-radius: 50%;
+    border: 2px solid transparent;
+    object-fit: cover;
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.profile-link.github .profile-pic {
+    border-color: #333; /* GitHub black color */
+}
+
+.profile-link.linkedin .profile-pic {
+    border-color: #0077b5; /* LinkedIn blue color */
+}
+
+.profile-link:hover .profile-pic {
+    transform:bounce(1);
+}
+
+.profile-tooltip {
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.profile-link:hover .profile-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+/* Responsive Design for Small Screens */
+@media (max-width: 576px) {
+    .developer-profile {
+        flex-direction: row;
+        justify-content: center;
+        padding: 10px;
+    }
+
+    .developer-name {
+        font-size: 12px;
+    }
+
+    .profile-links {
+        gap: 10px;
+    }
+
+    .profile-pic {
+        width: 30px; /* Even smaller for mobile */
+        height: 30px; /* Even smaller for mobile */
+    }
+
+    .profile-tooltip {
+        font-size: 10px;
+        bottom: -20px;
+    }
 }

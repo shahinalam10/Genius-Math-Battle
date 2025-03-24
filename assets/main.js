@@ -63,42 +63,39 @@ document.querySelectorAll('.theme-selector button').forEach(button => {
     });
 });
 
+// Function to show error message
+function showError(message) {
+    console.log('Error:', message); // Debugging
+    const errorButton = document.getElementById('errorButton');
+    errorButton.textContent = message;
+    errorButton.style.display = 'block';
+    setTimeout(() => {
+        errorButton.style.display = 'none';
+    }, 3000);
+}
+
 // Start Game
 document.getElementById('startGame').addEventListener('click', function() {
     // Preload sounds
     document.getElementById('correctSound').load();
     document.getElementById('incorrectSound').load();
 
-    // Get player name and trim whitespace
     let playerName = document.getElementById('playerName').value.trim();
 
-    // Error message button
-    let nameError = document.getElementById('nameError');
-
-    // Check if player name is empty
+    // Validate player name
     if (playerName === '') {
-        nameError.textContent = 'Please enter your name!'; // Set error message
-        nameError.style.display = 'block'; // Show error button
-        setTimeout(() => {
-            nameError.style.display = 'none'; // Hide error button after 2 seconds
-        }, 2000);
-        return; // Stop further execution
+        showError('Please enter your name!'); // Show error message
+        return;
     }
 
-    // Check if player name contains only letters and numbers
-    if (!/^[A-Za-z]+[A-Za-z0-9]*$/.test(playerName)) {
-        nameError.textContent = 'Name must start with a letter and can only contain letters and numbers!'; // Set error message
-        nameError.style.display = 'block'; // Show error button
-        setTimeout(() => {
-            nameError.style.display = 'none'; // Hide error button after 2 seconds
-        }, 2000);
-        return; // Stop further execution
+    // Check for invalid characters using regex
+    const validNameRegex = /^[a-zA-Z0-9_\- ]+$/; // Allows letters, numbers, _, -, and spaces
+    if (!validNameRegex.test(playerName)) {
+        showError('Invalid characters! Only letters, numbers, _, -, and spaces are allowed.'); // Show error message
+        return;
     }
 
-    // Hide error message if everything is valid
-    nameError.style.display = 'none';
-
-    // Set level and start the game
+    // If validation passes, start the game
     level = document.getElementById('level').value;
     document.getElementById('playerNameDisplay').textContent = playerName;
     document.getElementById('landingPage').style.display = 'none';
