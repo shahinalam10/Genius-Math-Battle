@@ -6,6 +6,7 @@
     <title>Genius Math Battle | Solve. Battle. Win!</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<<<<<<< HEAD
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -347,6 +348,40 @@
             <p class="hero-subtitle">Solve challenging math problems, battle opponents, and climb the leaderboard in this exciting educational game!</p>
             <div class="btn-container">
                 <a href="game.html" class="btn btn-primary">Play Now</a>
+=======
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="default-theme">
+    <div class="container text-center">
+        <!-- Landing Page -->
+        <div class="game-container" id="landingPage">
+            <h2 class="mb-4">Genius Math Battle</h2>
+            <input type="text" class="form-control mb-3" id="playerName" placeholder="Enter your name">
+            <!-- Error Button -->
+            <button id="errorButton" class="btn btn-danger" style="display: none;"></button>
+            <select class="form-select mb-3" id="level">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+            <div class="theme-selector">
+                <button class="ocean-theme" data-theme="ocean">
+                    🌊
+                </button>
+                <button class="sunset-theme" data-theme="sunset">
+                    🌅
+                </button>
+                <button class="forest-theme" data-theme="forest">
+                    🌳
+                </button>
+                <button class="midnight-theme" data-theme="midnight">
+                    🌌
+                </button>
+                <button class="candy-theme" data-theme="candy">
+                    🍬 
+                </button>
+>>>>>>> ef1b1558189427c048dd794446ba27c842c556a2
             </div>
         </div>
         
@@ -377,6 +412,80 @@
                     <li>Questions include addition, subtraction, multiplication, and division.</li>
                 </ul>
             </div>
+<<<<<<< HEAD
+=======
+            <button class="btn btn-primary w-100 mt-3" id="startGame">Start Game</button>
+
+            <!-- Developer Profile Section -->
+            <div class="developer-profile">
+                <p class="developer-name">Developed by <strong>Md. Shahin Alam</strong></p>
+                <div class="profile-links">
+                    <a href="https://github.com/shahinalam10" target="_blank" class="profile-link github">
+                        <img src="assets/img/github.jpg" alt="GitHub" class="profile-pic">
+                        <span class="profile-tooltip">GitHub</span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/md-shahin-alam-b3a9b120b/" target="_blank" class="profile-link linkedin">
+                        <img src="assets/img/linkdin.jpg" alt="LinkedIn" class="profile-pic">
+                        <span class="profile-tooltip">LinkedIn</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="game-screen" id="gameScreen">
+            <div class="score-timer">
+                <span id="timer">Time: 03:00</span>
+                <span id="score">Score: 0</span>
+                <div id="scoreAnimation" class="score-animation"></div> <!-- Score Animation -->
+            </div>
+            <div class="power-ups">
+                <div class="power-up" id="extraTime">⏳ +10s</div>
+                <div class="power-up" id="doublePoints">😮 Double Points</div>
+                <div class="power-up" id="skipQuestion">⏭️ Skip</div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div><br><br>
+            <div class="question" id="question"></div>
+            <input type="number" class="form-control mb-3" id="answer" placeholder="Enter your answer">
+            <button class="btn btn-success w-100 mb-3" id="submitAnswer">Submit</button>
+            <div class="alert alert-warning alert-box" id="feedback"></div>
+        </div>
+
+       <!-- Game Over Screen -->
+        <div class="game-over" id="gameOver">
+            <h2>Game Over! 🎮</h2>
+            <div class="trophy">🏆</div>
+            <div class="celebrate-message" id="celebrateMessage"></div>
+            <div class="game-over-stats">
+                <div class="stat-item">
+                    <span class="stat-icon">👤</span>
+                    <p><strong>Player:</strong> <span id="playerNameDisplay"></span></p>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">📊</span>
+                    <p><strong>Total Questions:</strong> <span id="totalQuestions"></span></p>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">✅</span>
+                    <p><strong>Correct Answers:</strong> <span id="correctAnswers"></span></p>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">❌</span>
+                    <p><strong>Incorrect Answers:</strong> <span id="incorrectAnswers"></span></p>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">🏆</span>
+                    <p><strong>Final Score:</strong> <span id="finalScore"></span></p>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">⏱️</span>
+                    <p><strong>Time Taken:</strong> <span id="timeTaken">3:00</span></p>
+                </div>
+            </div>
+            <button class="btn btn-primary" id="restartGame">🔄 Restart Game</button>
+>>>>>>> ef1b1558189427c048dd794446ba27c842c556a2
         </div>
     </div>
     
@@ -402,6 +511,7 @@
         </div>
     </footer>
 
+<<<<<<< HEAD
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
@@ -489,4 +599,11 @@
         window.addEventListener('resize', adjustMathSymbols);
     </script>
 </body>
+=======
+    <!-- Sound Effects -->
+    <audio id="correctSound" src="assets/audio/correct.mp3"></audio>
+    <audio id="incorrectSound" src="assets/audio/incorrect.mp3"></audio>
+</body>
+<script src="assets/main.js"></script>
+>>>>>>> ef1b1558189427c048dd794446ba27c842c556a2
 </html>

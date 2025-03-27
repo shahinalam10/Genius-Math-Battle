@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+<<<<<<< HEAD
     // Start Game
     document.getElementById('startGame').addEventListener('click', function() {
         const playerName = document.getElementById('playerName').value.trim();
@@ -110,6 +111,52 @@ document.addEventListener('DOMContentLoaded', function() {
             showError('No more time boosts available!');
             return;
         }
+=======
+// Function to show error message
+function showError(message) {
+    console.log('Error:', message); // Debugging
+    const errorButton = document.getElementById('errorButton');
+    errorButton.textContent = message;
+    errorButton.style.display = 'block';
+    setTimeout(() => {
+        errorButton.style.display = 'none';
+    }, 3000);
+}
+
+// Start Game
+document.getElementById('startGame').addEventListener('click', function() {
+    // Preload sounds
+    document.getElementById('correctSound').load();
+    document.getElementById('incorrectSound').load();
+
+    let playerName = document.getElementById('playerName').value.trim();
+
+    // Validate player name
+    if (playerName === '') {
+        showError('Please enter your name!'); // Show error message
+        return;
+    }
+
+    // Check for invalid characters using regex
+    const validNameRegex = /^[a-zA-Z0-9_\- ]+$/; // Allows letters, numbers, _, -, and spaces
+    if (!validNameRegex.test(playerName)) {
+        showError('Invalid characters! Only letters, numbers, _, -, and spaces are allowed.'); // Show error message
+        return;
+    }
+
+    // If validation passes, start the game
+    level = document.getElementById('level').value;
+    document.getElementById('playerNameDisplay').textContent = playerName;
+    document.getElementById('landingPage').style.display = 'none';
+    document.getElementById('gameScreen').style.display = 'block';
+    startTimer();
+    generateQuestion();
+});
+
+// Power-Ups
+document.getElementById('extraTime').addEventListener('click', function() {
+    if (powerUps.extraTime > 0) {
+>>>>>>> ef1b1558189427c048dd794446ba27c842c556a2
         timeLeft += 10;
         powerUps.extraTime--;
         this.classList.add('disabled');
