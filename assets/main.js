@@ -1,3 +1,4 @@
+// Game variables
 let score = 0;
 let timeLeft = 180;
 let timerInterval;
@@ -11,20 +12,30 @@ let powerUps = {
     doublePoints: 1,
     skipQuestion: 1
 };
+let isDoublePointsActive = false;
+
+// Comment tracking variables
+let currentCorrectIndex = 0;
+let currentIncorrectIndex = 0;
+let lastAnswerType = null; // 'correct' or 'incorrect'
 
 // Comments for correct answers
 const correctComments = [
     "Correct! ✅",
     "Awesome! 🎉",
     "Wow! 🔥",
-    "Math Genius! 🧠✨"
+    "Math Genius! 🧠✨",
+    "Unbelievable! 🤯",
+    "Unstoppable 🌟"
 ];
 
 // Comments for incorrect answers
 const incorrectComments = [
     "Oops! 😕",
     "Try Again! 😅",
-    "Don't Give Up! 💪"
+    "Don't Give Up! 💪",
+    "Almost There! 👍",
+    "You'll Get It Next Time! 🤞"
 ];
 
 // Celebrate messages based on score
@@ -35,104 +46,126 @@ const celebrateMessages = [
     { minScore: 30, message: "Amazing! You're a Math Genius! 🧠✨" }
 ];
 
-// Function to get the celebrate message based on score
-function getCelebrateMessage(score) {
-    return celebrateMessages.reduce((selectedMessage, currentMessage) => {
-        if (score >= currentMessage.minScore && currentMessage.minScore > selectedMessage.minScore) {
-            return currentMessage;
-        }
-        return selectedMessage;
-    }, { minScore: -1, message: "" }).message;
-}
-
 // Themes
 const themes = {
-    ocean: { background: "linear-gradient(135deg, #93C5FD, #3B82F6)", bodyClass: "ocean-theme" },
-    sunset: { background: "linear-gradient(135deg, #FCD34D, #F59E0B)", bodyClass: "sunset-theme" },
-    forest: { background: "linear-gradient(135deg, #6EE7B7, #10B981)", bodyClass: "forest-theme" },
-    midnight: { background: "linear-gradient(135deg, #1E1E2F, #3B3B4F)", bodyClass: "midnight-theme" },
-    candy: { background: "linear-gradient(135deg, #FF6F61, #FFA07A)", bodyClass: "candy-theme" },
+    ocean: { background: "linear-gradient(135deg, #1D4ED8, #1E90FF)", bodyClass: "ocean-theme" },
+    sunset: { background: "linear-gradient(135deg, #D97706, #FF4500)", bodyClass: "sunset-theme" },
+    forest: { background: "linear-gradient(135deg, #047857, #228B22)", bodyClass: "forest-theme" },
+    midnight: { background: "linear-gradient(135deg, #1E1E2F, #2C3E50)", bodyClass: "midnight-theme" },
+    candy: { background: "linear-gradient(135deg, #FF6F61, #FF1493)", bodyClass: "candy-theme" },
 };
 
-// Theme Selector
-document.querySelectorAll('.theme-selector button').forEach(button => {
-    button.addEventListener('click', function() {
-        const theme = themes[this.dataset.theme];
-        document.body.style.background = theme.background;
-        document.body.className = theme.bodyClass;
+// Error handling function
+function showError(message) {
+    const errorButton = document.getElementById('errorButton');
+    errorButton.textContent = message;
+    errorButton.style.display = 'block';
+    errorButton.style.animation = 'errorFadeIn 0.3s ease-out';
+    
+    setTimeout(() => {
+        errorButton.style.animation = 'errorFadeOut 0.5s ease-out';
+        setTimeout(() => {
+            errorButton.style.display = 'none';
+        }, 500);
+    }, 3000);
+}
+
+// Initialize game
+document.addEventListener('DOMContentLoaded', function() {
+    // Theme Selector
+    document.querySelectorAll('.theme-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const theme = themes[this.dataset.theme];
+            document.body.style.background = theme.background;
+            document.body.className = theme.bodyClass;
+        });
     });
-});
 
-// Start Game
-document.getElementById('startGame').addEventListener('click', function() {
-    // Preload sounds
-    document.getElementById('correctSound').load();
-    document.getElementById('incorrectSound').load();
+    // Start Game
+    document.getElementById('startGame').addEventListener('click', function() {
+        const playerName = document.getElementById('playerName').value.trim();
+        
+        if (!playerName) {
+            showError('Please enter your name to start!');
+            return;
+        }
+        
+        const validNameRegex = /^[a-zA-Z0-9_\- ]{2,20}$/;
+        if (!validNameRegex.test(playerName)) {
+            showError('Name must be 2-20 characters (letters, numbers, spaces, - or _)');
+            return;
+        }
+        
+        level = document.getElementById('level').value;
+        document.getElementById('playerNameDisplay').textContent = playerName;
+        document.getElementById('landingPage').style.display = 'none';
+        document.getElementById('gameScreen').style.display = 'block';
+        startTimer();
+        generateQuestion();
+    });
 
-    // Get player name and trim whitespace
-    let playerName = document.getElementById('playerName').value.trim();
-
-    // Error message button
-    let nameError = document.getElementById('nameError');
-
-    // Check if player name is empty
-    if (playerName === '') {
-        nameError.textContent = 'Please enter your name!'; // Set error message
-        nameError.style.display = 'block'; // Show error button
-        setTimeout(() => {
-            nameError.style.display = 'none'; // Hide error button after 2 seconds
-        }, 2000);
-        return; // Stop further execution
-    }
-
-    // Check if player name contains only letters and numbers
-    if (!/^[A-Za-z]+[A-Za-z0-9]*$/.test(playerName)) {
-        nameError.textContent = 'Name must start with a letter and can only contain letters and numbers!'; // Set error message
-        nameError.style.display = 'block'; // Show error button
-        setTimeout(() => {
-            nameError.style.display = 'none'; // Hide error button after 2 seconds
-        }, 2000);
-        return; // Stop further execution
-    }
-
-    // Hide error message if everything is valid
-    nameError.style.display = 'none';
-
-    // Set level and start the game
-    level = document.getElementById('level').value;
-    document.getElementById('playerNameDisplay').textContent = playerName;
-    document.getElementById('landingPage').style.display = 'none';
-    document.getElementById('gameScreen').style.display = 'block';
-    startTimer();
-    generateQuestion();
-});
-
-// Power-Ups
-document.getElementById('extraTime').addEventListener('click', function() {
-    if (powerUps.extraTime > 0) {
+    // Power-Ups
+    document.getElementById('extraTime').addEventListener('click', function() {
+        if (powerUps.extraTime <= 0) {
+            showError('No more time boosts available!');
+            return;
+        }
         timeLeft += 10;
         powerUps.extraTime--;
-        this.style.opacity = '0.5';
-        this.style.pointerEvents = 'none';
-    }
-});
+        this.classList.add('disabled');
+        showScoreAnimation("+10s", "#00b894");
+    });
 
-document.getElementById('doublePoints').addEventListener('click', function() {
-    if (powerUps.doublePoints > 0) {
-        score += 3; // Double points for the next correct answer
+    document.getElementById('doublePoints').addEventListener('click', function() {
+        if (powerUps.doublePoints <= 0) {
+            showError('No more double points available!');
+            return;
+        }
         powerUps.doublePoints--;
-        this.style.opacity = '0.5';
-        this.style.pointerEvents = 'none';
-    }
-});
+        isDoublePointsActive = true;
+        this.classList.add('disabled');
+        showScoreAnimation("2x Points Active!", "#6c5ce7");
+        
+        const indicator = document.createElement('div');
+        indicator.className = 'double-points-indicator';
+        indicator.textContent = '2x Points Active!';
+        document.querySelector('.game-stats').appendChild(indicator);
+        
+        setTimeout(() => {
+            indicator.remove();
+        }, 3000);
+        
+        const originalTotalQuestions = totalQuestions;
+        const checkDeactivation = setInterval(() => {
+            if (totalQuestions >= originalTotalQuestions + 3 || timeLeft <= 0) {
+                isDoublePointsActive = false;
+                clearInterval(checkDeactivation);
+            }
+        }, 1000);
+    });
 
-document.getElementById('skipQuestion').addEventListener('click', function() {
-    if (powerUps.skipQuestion > 0) {
+    document.getElementById('skipQuestion').addEventListener('click', function() {
+        if (powerUps.skipQuestion <= 0) {
+            showError('No more skips available!');
+            return;
+        }
         generateQuestion();
         powerUps.skipQuestion--;
-        this.style.opacity = '0.5';
-        this.style.pointerEvents = 'none';
-    }
+        this.classList.add('disabled');
+    });
+
+    // Submit Answer
+    document.getElementById('submitAnswer').addEventListener('click', submitAnswer);
+    document.getElementById('answer').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            submitAnswer();
+        }
+    });
+
+    // Restart Game
+    document.getElementById('restartGame').addEventListener('click', function() {
+        location.reload();
+    });
 });
 
 function startTimer() {
@@ -140,30 +173,68 @@ function startTimer() {
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
             endGame();
+            return;
         }
-        let minutes = Math.floor(timeLeft / 60);
-        let seconds = timeLeft % 60;
-        document.getElementById('timer').textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
         timeLeft--;
+        updateTimerDisplay();
     }, 1000);
+}
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    document.getElementById('timer').textContent = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+    if (timeLeft <= 30) {
+        document.querySelector('.timer').style.color = '#d63031';
+    }
 }
 
 function generateQuestion() {
     let num1, num2, operator;
-    if (level === 'easy') {
-        num1 = Math.floor(Math.random() * 10) + 1;
-        num2 = Math.floor(Math.random() * 10) + 1;
-    } else if (level === 'medium') {
-        num1 = Math.floor(Math.random() * 20) + 1;
-        num2 = Math.floor(Math.random() * 20) + 1;
-    } else if (level === 'hard') {
-        num1 = Math.floor(Math.random() * 50) + 1;
-        num2 = Math.floor(Math.random() * 50) + 1;
-    }
-
     operator = ['+', '-', '*', '/'][Math.floor(Math.random() * 4)];
-    if (operator === '/') {
-        num1 = num1 * num2; // Ensure division results in whole numbers
+
+    if (level === 'easy') {
+        if (operator === '-') {
+            num1 = Math.floor(Math.random() * 9) + 2;
+            num2 = Math.floor(Math.random() * (num1 - 1)) + 1;
+        } else if (operator === '/') {
+            num2 = Math.floor(Math.random() * 5) + 1;
+            num1 = num2 * (Math.floor(Math.random() * 5) + 1);
+        } else {
+            num1 = Math.floor(Math.random() * 10) + 1;
+            num2 = Math.floor(Math.random() * 10) + 1;
+        }
+    } else if (level === 'medium') {
+        if (operator === '-') {
+            num1 = Math.floor(Math.random() * 30) + 10;
+            num2 = Math.floor(Math.random() * (num1 - 5)) + 5;
+        } else if (operator === '/') {
+            num2 = Math.floor(Math.random() * 8) + 3;
+            num1 = num2 * (Math.floor(Math.random() * 10) + 3);
+        } else if (operator === '*') {
+            num1 = Math.floor(Math.random() * 15) + 5;
+            num2 = Math.floor(Math.random() * 10) + 3;
+        } else {
+            num1 = Math.floor(Math.random() * 30) + 10;
+            num2 = Math.floor(Math.random() * 30) + 10;
+        }
+    } else {
+        if (operator === '-') {
+            num1 = Math.floor(Math.random() * 60) + 40;
+            num2 = Math.floor(Math.random() * (num1 - 20)) + 20;
+        } else if (operator === '/') {
+            num2 = Math.floor(Math.random() * 15) + 6;
+            num1 = num2 * (Math.floor(Math.random() * 15) + 6);
+        } else if (operator === '*') {
+            num1 = Math.floor(Math.random() * 30) + 10;
+            num2 = Math.floor(Math.random() * 20) + 10;
+        } else {
+            num1 = Math.floor(Math.random() * 80) + 20;
+            num2 = Math.floor(Math.random() * 80) + 20;
+        }
     }
 
     const questionElement = document.getElementById('question');
@@ -171,113 +242,158 @@ function generateQuestion() {
     questionElement.dataset.answer = eval(`${num1} ${operator} ${num2}`).toFixed(2);
     totalQuestions++;
 
-    // Trigger bounce animation
-    questionElement.style.animation = 'none'; // Reset animation
-    void questionElement.offsetWidth; // Trigger reflow
-    questionElement.style.animation = 'bounce 0.5s ease-in-out'; // Reapply animation
+    questionElement.style.animation = 'none';
+    void questionElement.offsetWidth;
+    questionElement.style.animation = 'bounce 0.5s ease-in-out';
 }
 
-// Function to show score animation
-function showScoreAnimation(points, color) {
-    let scoreAnimation = document.getElementById('scoreAnimation');
-    scoreAnimation.textContent = (points > 0 ? `+${points}` : `${points}`);
-    scoreAnimation.style.color = color;
-
-    // Reset animation
-    scoreAnimation.style.animation = 'none';
-    void scoreAnimation.offsetWidth; // Trigger reflow
-    scoreAnimation.style.animation = 'floatUp 1s ease-out';
-
-    // Display the animation
-    scoreAnimation.style.display = 'block';
-
-    // Hide the animation after 1 second
-    setTimeout(() => {
-        scoreAnimation.style.display = 'none';
-    }, 1000);
-}
-
-document.getElementById('submitAnswer').addEventListener('click', function() {
-    let userAnswer = document.getElementById('answer').value.trim();
-    let feedback = document.getElementById('feedback');
-    feedback.style.display = 'block';
-
-    if (userAnswer === '') {
-        feedback.className = 'alert alert-danger alert-box';
-        feedback.textContent = 'Please enter an answer!';
+function submitAnswer() {
+    const userAnswer = document.getElementById('answer').value.trim();
+    const feedback = document.getElementById('feedback');
+    
+    if (!userAnswer) {
+        showError('Please enter an answer!');
         return;
     }
 
-    let correctAnswer = parseFloat(document.getElementById('question').dataset.answer);
-    userAnswer = parseFloat(userAnswer);
-
-    if (userAnswer === correctAnswer) {
-        score += 3;
-        correctCount++;
-        correctStreak++;
-        if (correctStreak >= 3) {
-            feedback.textContent = correctComments[3]; // Math Genius!
-        } else {
-            feedback.textContent = correctComments[correctStreak - 1];
-        }
-        feedback.className = 'alert alert-success alert-box';
-        document.getElementById('correctSound').play();
-        showScoreAnimation(3, 'green'); // Show +3 animation
-        createConfetti();
-    } else {
-        score -= 1;
-        incorrectCount++;
-        correctStreak = 0; // Reset streak
-        feedback.textContent = incorrectComments[Math.min(incorrectCount - 1, incorrectComments.length - 1)];
-        feedback.className = 'alert alert-danger alert-box';
-        document.getElementById('incorrectSound').play();
-        showScoreAnimation(-1, 'red'); // Show -1 animation
+    if (isNaN(userAnswer)) {
+        showError('Please enter a valid number!');
+        return;
     }
 
-    document.getElementById('score').textContent = `Score: ${score}`;
+    const correctAnswer = parseFloat(document.getElementById('question').dataset.answer);
+    const userAnswerNum = parseFloat(userAnswer);
+
+    if (Math.abs(userAnswerNum - correctAnswer) < 0.01) {
+        handleCorrectAnswer(feedback);
+    } else {
+        handleIncorrectAnswer(feedback, correctAnswer);
+    }
+
     document.getElementById('answer').value = '';
     updateProgressBar();
     generateQuestion();
-});
+}
+
+function handleCorrectAnswer(feedback) {
+    // Reset to first comment if previous was incorrect
+    if (lastAnswerType === 'incorrect') {
+        currentCorrectIndex = 0;
+    }
+    
+    const points = isDoublePointsActive ? 6 : 3;
+    score += points;
+    correctCount++;
+    correctStreak++;
+    
+    // Get current correct comment
+    feedback.textContent = correctComments[currentCorrectIndex];
+    
+    // Move to next comment (loop if at end)
+    currentCorrectIndex = (currentCorrectIndex + 1) % correctComments.length;
+    
+    feedback.className = 'feedback correct';
+    feedback.style.display = 'block';
+    lastAnswerType = 'correct';
+    
+    document.getElementById('correctSound').play();
+    showScoreAnimation(`+${points}`, "#00b894");
+    createConfetti();
+    updateScoreDisplay();
+}
+
+function handleIncorrectAnswer(feedback, correctAnswer) {
+    // Reset to first comment if previous was correct
+    if (lastAnswerType === 'correct') {
+        currentIncorrectIndex = 0;
+    }
+    
+    score = Math.max(0, score - 1);
+    incorrectCount++;
+    correctStreak = 0;
+    
+    // Get current incorrect comment
+    feedback.textContent = `${incorrectComments[currentIncorrectIndex]} (Answer: ${correctAnswer})`;
+    
+    // Move to next comment (loop if at end)
+    currentIncorrectIndex = (currentIncorrectIndex + 1) % incorrectComments.length;
+    
+    feedback.className = 'feedback incorrect';
+    feedback.style.display = 'block';
+    lastAnswerType = 'incorrect';
+    
+    document.getElementById('incorrectSound').play();
+    showScoreAnimation("-1", "#d63031");
+    updateScoreDisplay();
+}
+
+function updateScoreDisplay() {
+    document.getElementById('score').textContent = score;
+}
 
 function updateProgressBar() {
-    let progress = (correctCount / totalQuestions) * 100;
+    const progress = (correctCount / totalQuestions) * 100;
     document.getElementById('progressBar').style.width = `${progress}%`;
 }
 
 function createConfetti() {
-    const emojis = ["🎉", "🎊", "✨"];
+    const colors = ['#6c5ce7', '#fd79a8', '#00b894', '#fdcb6e', '#0984e3'];
+    const container = document.querySelector('.game-card');
+    
     for (let i = 0; i < 30; i++) {
-        let confetti = document.createElement('div');
+        const confetti = document.createElement('div');
         confetti.className = 'confetti';
-        confetti.textContent = emojis[Math.floor(Math.random() * emojis.length)];
         confetti.style.left = `${Math.random() * 100}%`;
-        confetti.style.animationDelay = `${Math.random()}s`;
-        document.getElementById('gameScreen').appendChild(confetti);
-        setTimeout(() => confetti.remove(), 1000);
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.width = `${Math.random() * 6 + 3}px`;
+        confetti.style.height = `${Math.random() * 6 + 3}px`;
+        confetti.style.animationDuration = `${Math.random() * 2 + 1}s`;
+        container.appendChild(confetti);
+        
+        setTimeout(() => {
+            confetti.remove();
+        }, 2000);
     }
 }
 
+function showScoreAnimation(text, color) {
+    const animation = document.createElement('div');
+    animation.className = 'score-animation';
+    animation.textContent = text;
+    animation.style.color = color;
+    animation.style.left = `${Math.random() * 60 + 20}%`;
+    
+    document.querySelector('.game-card').appendChild(animation);
+    
+    setTimeout(() => {
+        animation.remove();
+    }, 1000);
+}
+
 function endGame() {
+    clearInterval(timerInterval);
     document.getElementById('gameScreen').style.display = 'none';
     document.getElementById('gameOver').style.display = 'block';
-
-    // Display stats
+    
     document.getElementById('totalQuestions').textContent = totalQuestions;
     document.getElementById('correctAnswers').textContent = correctCount;
     document.getElementById('incorrectAnswers').textContent = incorrectCount;
     document.getElementById('finalScore').textContent = score;
-
-    // Show celebrate message
-    let message = getCelebrateMessage(score); // Use the new function
+    
+    const minutes = Math.floor((180 - timeLeft) / 60);
+    const seconds = (180 - timeLeft) % 60;
+    document.getElementById('timeTaken').textContent = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    
+    const message = celebrateMessages.reduce((selected, current) => {
+        return score >= current.minScore ? current : selected;
+    }, celebrateMessages[0]).message;
+    
     document.getElementById('celebrateMessage').textContent = message;
-
-    // Add confetti
-    for (let i = 0; i < 50; i++) {
-        createConfetti();
+    
+    if (score >= 20) {
+        for (let i = 0; i < 20; i++) {
+            setTimeout(() => createConfetti(), i * 50);
+        }
     }
 }
-
-document.getElementById('restartGame').addEventListener('click', function() {
-    location.reload();
-});

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genius Math Battle</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body class="default-theme">
+    <div class="game-wrapper">
+        <div class="game-card">
+            <!-- Landing Page -->
+            <div class="game-header">
+                <p class="game-subtitle">Challenge your brain with fun math problems</p>
+            </div>
+            
+            <div class="game-content">
+                <div id="landingPage" class="landing-page">
+                    <div class="player-input">
+                        <input type="text" id="playerName" class="form-control" placeholder="Enter your name">
+                          <!-- Error Button -->
+                        <button id="errorButton" class="btn btn-danger" style="display: none;"></button>
+                    </div>
+                    
+                    <div class="level-select">
+                        <select id="level" class="form-select">
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+                    
+                    <button id="startGame" class="start-btn">Start Challenge</button>
+                    
+                    <div class="theme-selector">
+                        <button class="theme-btn" data-theme="ocean" style="background: linear-gradient(135deg, #1D4ED8, #1E90FF);">🌊</button>
+                        <button class="theme-btn" data-theme="sunset" style="background: linear-gradient(135deg, #D97706, #FF4500);">🌅</button>
+                        <button class="theme-btn" data-theme="forest" style="background: linear-gradient(135deg, #047857, #228B22);">🌳</button>
+                        <button class="theme-btn" data-theme="midnight" style="background: linear-gradient(135deg, #1E1E2F, #2C3E50); color: white;">🌌</button>
+                        <button class="theme-btn" data-theme="candy" style="background: linear-gradient(135deg, #FF6F61, #FF1493);">🍬</button>
+                    </div>
+                </div>
+                
+                <!-- Game Screen -->
+                <div id="gameScreen" class="game-screen">
+                    <div class="game-stats">
+                        <div class="stat-item timer">
+                            <span class="stat-icon">⏱️</span>
+                            <span id="timer">03:00</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">🏆</span>
+                            <span id="score">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="power-ups">
+                        <div class="power-up" id="extraTime">
+                            <span>⏳</span> +10s
+                        </div>
+                        <div class="power-up" id="doublePoints">
+                            <span>😮</span> Double Points
+                        </div>
+                        <div class="power-up" id="skipQuestion">
+                            <span>⏭️</span> Skip
+                        </div>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    
+                    <div class="question-container">
+                        <div class="question" id="question"></div>
+                    </div>
+                    
+                    <div class="answer-input">
+                        <input type="number" id="answer" class="form-control" placeholder="Your answer...">
+                    </div>
+                    
+                    <button id="submitAnswer" class="submit-btn">Submit Answer</button>
+                    
+                    <div id="feedback" class="feedback"></div>
+                </div>
+                
+                <!-- Game Over Screen -->
+                <div id="gameOver" class="game-over">
+                    <div class="game-over-header">
+                        <div class="trophy">🏆</div>
+                        <h2 class="game-over-title">Game Complete!</h2>
+                        <p id="celebrateMessage" class="game-subtitle">You're a math wizard!</p>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <p class="stat-label">Player</p>
+                            <p class="stat-value" id="playerNameDisplay">-</p>
+                        </div>
+                        <div class="stat-card">
+                            <p class="stat-label">Total Questions</p>
+                            <p class="stat-value" id="totalQuestions">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <p class="stat-label">Correct Answers</p>
+                            <p class="stat-value" id="correctAnswers">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <p class="stat-label">Incorrect Answers</p>
+                            <p class="stat-value" id="incorrectAnswers">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <p class="stat-label">Final Score</p>
+                            <p class="stat-value" id="finalScore">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <p class="stat-label">Time Left</p>
+                            <p class="stat-value" id="timeTaken">03:00</p>
+                        </div>
+                    </div>
+                    
+                    <button id="restartGame" class="restart-btn">Play Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sound Effects -->
+    <audio id="correctSound" src="/assets/audio/correct.mp3"></audio>
+    <audio id="incorrectSound" src="/assets/audio/incorrect.mp3"></audio>
+</body>
+<script src="assets/main.js"></script>
+</html>
